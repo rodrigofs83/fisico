@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="Academia.jnlp">
+  <information>
+    <title>Academia</title>
+    <vendor>POSITIVO</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="Academia.jar" size="29185" download="eager" />
+    <jar href="lib\fontawesomefx-8.9.jar" size="571068" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="800" height="600" main-class="academia.Academia"  name="Academia" />
+  <update check="always"/>
+</jnlp>
