@@ -7,9 +7,12 @@ package academia.controller;
 import academia.controller.FXMLAlunoFormController;
 import academia.AlunoForm;
 import academia.AlunoTable;
+import academia.Erros.Alerta;
+import academia.MatriculaForm;
 import academia.dao.AlunoDAO;
 
 import academia.model.Aluno;
+import academia.Erros.ApagaMsgError;
 import academia.sqlite.ConexaoSQLiteJDBC;
 import java.io.IOException;
 import java.net.URL;
@@ -51,11 +54,17 @@ import javafx.stage.Stage;
  */
 public class FXMLAlunoTableController implements Initializable, Observer {
 
+    ApagaMsgError apagaMsg = new ApagaMsgError();
     @FXML
     private VBox alunoFormContainer;
-
+    @FXML
+    private Stage pegaStage;
     @FXML
     private Label lbAluno;
+    @FXML
+    private Label msgError;
+    @FXML
+    private Button btnMatricular;
     @FXML
     private Button btn_cadastra;
     @FXML
@@ -119,9 +128,9 @@ public class FXMLAlunoTableController implements Initializable, Observer {
         } else {
 
             // Obtém a conexão antes de utilizá-la no AlunoDAO
-            try (Connection conn = ConexaoSQLiteJDBC.conectar()) {
+            try (Connection conn = ConexaoSQLiteJDBC.getConexao()) {
                 // Inserir o aluno no banco usando o AlunoDAO
-                AlunoDAO alunoDAO = new AlunoDAO(conn);
+                AlunoDAO alunoDAO = new AlunoDAO();
                 if (alunoDAO.put(alunoSelecionado)) {
                     // Fecha a conexão após utilizar o AlunoDAO
                     // labelError.setText("Aluno cadastrado com sucesso");
@@ -153,9 +162,9 @@ public class FXMLAlunoTableController implements Initializable, Observer {
         } else {
 
             // Obtém a conexão antes de utilizá-la no AlunoDAO
-            try (Connection conn = ConexaoSQLiteJDBC.conectar()) {
+            try (Connection conn = ConexaoSQLiteJDBC.getConexao()) {
                 // Inserir o aluno no banco usando o AlunoDAO
-                AlunoDAO alunoDAO = new AlunoDAO(conn);
+                AlunoDAO alunoDAO = new AlunoDAO();
                 if (alunoDAO.delete(alunoSelecionado.getId())) {
                     // Fecha a conexão após utilizar o AlunoDAO
                     // labelError.setText("Aluno cadastrado com sucesso");
@@ -177,8 +186,8 @@ public class FXMLAlunoTableController implements Initializable, Observer {
     @FXML
     public void atualizarTable() {
         tvAluno.getItems().clear();
-        try (Connection conn = ConexaoSQLiteJDBC.conectar()) {
-            AlunoDAO alunoDAO = new AlunoDAO(conn);
+        try (Connection conn = ConexaoSQLiteJDBC.getConexao()) {
+            AlunoDAO alunoDAO = new AlunoDAO();
             List<Aluno> alunos = alunoDAO.getAll();
             System.out.println(alunos);
             alunosList.addAll(alunos);
@@ -192,17 +201,40 @@ public class FXMLAlunoTableController implements Initializable, Observer {
     }
 
     private void abrirFormularioEdicao(Aluno aluno, boolean edicao) {
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/academia/View/FXMLAlunoForm.fxml"));
             Parent root = loader.load();
             FXMLAlunoFormController controller = loader.getController();
             controller.preencherCampos(aluno);
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
+            pegaStage = new Stage();
+            pegaStage.setScene(new Scene(root));
+            pegaStage.setTitle("editar");
+            pegaStage.showAndWait();
+
         } catch (IOException ex) {
             Logger.getLogger(FXMLAlunoTableController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+    }
+
+    private void abrirFormularioMatricula(Aluno aluno) {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/academia/View/FXMLMatricula.fxml"));
+            Parent root = loader.load();
+            FXMLMatriculaController controller = loader.getController();
+            controller.preencherLabelAluno(aluno);
+            pegaStage = new Stage();
+            pegaStage.setScene(new Scene(root));
+            pegaStage.setTitle("matricular");
+            pegaStage.showAndWait();
+
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLMatriculaController.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
     }
 
     @Override
@@ -250,9 +282,9 @@ public class FXMLAlunoTableController implements Initializable, Observer {
             return cell;
         });
         columnFone.setCellValueFactory(new PropertyValueFactory<>("fone"));
-        
-        try (Connection conn = ConexaoSQLiteJDBC.conectar()) {
-            AlunoDAO alunoDAO = new AlunoDAO(conn);
+
+        try (Connection conn = ConexaoSQLiteJDBC.getConexao()) {
+            AlunoDAO alunoDAO = new AlunoDAO();
             List<Aluno> alunos = alunoDAO.getAll();
             System.out.println(alunos);
             alunosList.addAll(alunos);
@@ -266,58 +298,63 @@ public class FXMLAlunoTableController implements Initializable, Observer {
 
         tvAluno.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> selectAluno(newSelection));
         btn_editarAluno.setOnMouseClicked((MouseEvent e) -> {
-
             Aluno alunoSelecionado = tvAluno.getSelectionModel().getSelectedItem();
             if (alunoSelecionado != null) {
-
                 try {
-//                    try (Connection conn = ConexaoSQLiteJDBC.conectar()) {
-//                    AlunoDAO alunoDAO = new AlunoDAO(conn);
-//                        Optional<Aluno> alunoPesq = alunoDAO.getById(alunoSelecionado.getId());
-//                        System.out.println(alunoPesq);
-                      this.abrirFormularioEdicao(alunoSelecionado, true);
-//                } catch (SQLException ex) {
-//                    Logger.getLogger(FXMLAlunoTableController.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-                    
-                    
-                    
+                    this.abrirFormularioEdicao(alunoSelecionado, true);
+                    this.atualizarTable();
                 } catch (Exception ex) {
                     Logger.getLogger(FXMLAlunoTableController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-                this.atualizarTable();
-
+            } else {
+                msgError.setText("selecione um aluno na tabela para edição");
+                apagaMsg.apagaMsg(msgError);
             }
         });
         btn_excluirAluno.setOnMouseClicked((MouseEvent e) -> {
-            try {
+            if (pegaStage != null && pegaStage.isShowing()) {
+                pegaStage.close();  // Traz a janela para frente
+            } else {
                 Aluno alunoSelecionado = tvAluno.getSelectionModel().getSelectedItem();
                 if (alunoSelecionado != null) {
-                    if (this.removerAction(alunoSelecionado)) {
-                        System.out.println("Aluno remover com sucesso");
-                        // Atualiza a tabela
-                        alunosList.remove(alunoSelecionado);
-                        tvAluno.refresh();
+                    String title = "Confirmação de Exclusão";
+                    String headerText = "Deseja realmente excluir o aluno " + alunoSelecionado.getNome() + "?";
+                    String contentText = "Esta ação é irreversível.";
+                    if (Alerta.confirmationAlert(title, headerText, contentText)) {
+                        try {
+                            if (this.removerAction(alunoSelecionado)) {
+                                System.out.println("Aluno remover com sucesso");
+                                // Atualiza a tabela
+                                alunosList.remove(alunoSelecionado);
+                                tvAluno.refresh();
+                            } else {
+                                // User clicked "Cancelar" or closed the alert
+                                System.out.println("Exclusão cancelada.");
+                            }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(FXMLAlunoTableController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
                     }
                 } else {
                     System.out.println("Nenhum aluno selecionado.");
+                    msgError.setText("selecione um aluno na tabela para exclusão");
+                    apagaMsg.apagaMsg(msgError);
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(FXMLAlunoTableController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (Exception ex) {
-                Logger.getLogger(FXMLAlunoTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         btn_cadastra.setOnMouseClicked((MouseEvent e) -> {
-
             try {
-                AlunoForm alunoForm = new AlunoForm();
-                // Adicionar o nó raiz ao StackPane
-                // Adicionar o nó raiz à StackPane
-                Stage alunoFormStage = alunoForm.getStage();
-                if (alunoFormStage == null || !alunoFormStage.isShowing()) {
-                    alunoForm.start(new Stage());
+                AlunoForm a = new AlunoForm();
+                if(AlunoForm.getStage() == null){
+                // Check if the AlunoForm window is open
+                 a.start(new Stage());
+                 
+                }else if(AlunoForm.getStage() != null && AlunoForm.getStage().getTitle().equals("cadastrar") ){
+                    AlunoForm.getStage().toFront();
+                    
+                }else{
+                     System.out.println("continue ");
                 }
                 FXMLAlunoFormController formController = FXMLAlunoFormController.getInstance();
                 if (formController != null) {
@@ -330,12 +367,32 @@ public class FXMLAlunoTableController implements Initializable, Observer {
             } catch (Exception ex) {
                 Logger.getLogger(FXMLAlunoTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         });
         btnRefresh.setOnMouseClicked((MouseEvent e) -> {
             System.out.println("Botão de atualização clicado");
             this.atualizarTable();
         });
+        btnMatricular.setOnMouseClicked((MouseEvent e) -> {
+            if (pegaStage != null && pegaStage.isShowing()) {
+                String title = pegaStage.getTitle(); // Traz a janela para frente
+                System.out.println(title);
+                if (title.equals("cadastrar")) {
+                    pegaStage.toFront();
+                }
+            } else {
+                Aluno alunoSelecionado = tvAluno.getSelectionModel().getSelectedItem();
+                if (alunoSelecionado != null) {
+
+                    try {
+                        this.abrirFormularioMatricula(alunoSelecionado);
+
+                    } catch (Exception ex) {
+                        Logger.getLogger(FXMLAlunoTableController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
     }
 
-   
 }

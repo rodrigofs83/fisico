@@ -1,0 +1,13 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+}
+.date-picker {
+    -fx-font-size: 20px;
+}
+.table-view{
+     -fx-font-size: 20px;
+}

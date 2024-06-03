@@ -1,0 +1,29 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 27 de jul. de 2023, 12:37:26
+    Author     : POSITIVO
+*/
+.navbar{
+   -fx-background-color:#699621;
+}
+.nav_circle{
+    -fx-background-image:url("../imagens/fisico.jpeg");
+		
+	-fx-background-size:stretch
+}
+.lefnavibar{
+   -fx-background-color:#6fa33c;
+}
+.nav_btn{
+	-fx-background-color: #699621;
+	-fx-background-radius:5px;
+	-fx-cursor:hand;
+	
+}
+.nav_btn:hover{
+ 	-fx-background-color:#89cd80;
+ 	
+ }
