@@ -1,0 +1,29 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+    -fx-background-color:#436d22;
+}
+.btnSalvar{
+    -fx-background-color: #32CD32;
+    -fx-background-radius:5px;
+    -fx-cursor:hand;
+}
+.btnCancelar{
+    -fx-background-color: #f2301b;
+    -fx-background-radius:5px;
+    -fx-cursor:hand;
+}
+.btnCancelar:hover{
+ 	-fx-background-color:#ff7878;
+ 	
+ }
+
+.btnSalvar:hover{
+ 	-fx-background-color:#89cd80;
+ 	
+ }
+ .choiceBoxDDD{
+     -fx-font-size: 20px;
+ }

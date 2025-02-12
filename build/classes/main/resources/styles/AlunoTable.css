@@ -1,0 +1,20 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.background {
+    -fx-background-color: #1d1d1d;
+}
+.table-view {
+    
+    -fx-background-color: #1d1d1d;
+    -fx-table-cell-border-color: blue;
+    -fx-font-style: italic; 
+   
+   -fx-table-header-border-color: red;
+    -fx-padding: 5;
+    -fx-text-fill: red; 
+    -fx-font-style: italic; 
+    -fx-font-size: 20px;
+   
+}

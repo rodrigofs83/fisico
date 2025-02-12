@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="475.0" prefWidth="644.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.FXMLTelaLoginController">
+   <right>
+      <AnchorPane prefHeight="400.0" prefWidth="296.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="btn_close" layoutX="239.0" layoutY="14.0" mnemonicParsing="false" onAction="#closeAction" prefHeight="28.0" prefWidth="37.0" styleClass="btn-exit" stylesheets="@../styles/styleLogin.css">
+               <graphic>
+                  <FontAwesomeIconView fill="#fffbfb" glyphName="CLOSE" size="20" text="" wrappingWidth="12.714285850524902" />
+               </graphic>
+            </Button>
+            <FontAwesomeIconView glyphName="USERS" layoutX="129.0" layoutY="99.0" size="35" text="" />
+            <Text fill="#030303" layoutX="89.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Login">
+               <font>
+                  <Font name="Arial" size="24.0" />
+               </font>
+            </Text>
+            <TextField fx:id="userName" layoutX="103.0" layoutY="200.0" promptText="User Name" style="-fx-border-width: 0px 0px 2px 0px; -fx-border-color: white; -fx-background-color: transparent;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <FontAwesomeIconView fill="#060706" glyphName="USER" layoutX="66.0" layoutY="223.0" size="20" />
+            <PasswordField fx:id="passWord" layoutX="96.0" layoutY="251.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </PasswordField>
+            <FontAwesomeIconView fill="#232523" glyphName="KEY" layoutX="63.0" layoutY="275.0" size="20" text="" />
+            <Button fx:id="btn_login" layoutX="122.0" layoutY="305.0" mnemonicParsing="false" onAction="#loginAction" prefHeight="30.0" prefWidth="89.0" styleClass="btn-login" stylesheets="@../styles/styleLogin.css" text="Login" textFill="#1d2025">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Button>
+            <Hyperlink fx:id="forgiotPass" layoutX="96.0" layoutY="352.0" text="Forgot your password ?" textFill="#198d0a" />
+            <Label fx:id="labelErroMenssage" alignment="CENTER" layoutX="49.0" layoutY="172.0" prefHeight="17.0" prefWidth="222.0" textFill="#f51414" />
+         </children>
+      </AnchorPane>
+   </right>
+   <center>
+      <AnchorPane prefHeight="400.0" prefWidth="285.0" styleClass="root" stylesheets="@../styles/styleLogin.css" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

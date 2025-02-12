@@ -1,0 +1,17 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+-fx-background-color: #1d1d1d;
+    -fx-table-cell-border-color: blue;
+    -fx-font-style: italic; 
+   -fx-table-header-border-color: red;
+    -fx-padding:1;
+    -fx-text-fill: red; 
+    -fx-font-style: italic; 
+    -fx-font-size: 20px;
+}
+.TextFiel{
+    -fx-font-size: 20px;
+}

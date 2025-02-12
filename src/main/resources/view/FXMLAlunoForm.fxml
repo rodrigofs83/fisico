@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="580.0" prefWidth="700.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.FXMLAlunoFormController">
+    <stylesheets>
+        <URL value="@fxmlalunoform.css" />
+    </stylesheets>
+   <children>
+      <AnchorPane prefHeight="46.0" prefWidth="700.0" styleClass="mainFxmlClass" stylesheets="@../styles/fxmlalunoform.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="labelTitulo" layoutX="284.0" layoutY="17.0" text="Cadastro" textFill="#1b1919" AnchorPane.bottomAnchor="17.0" AnchorPane.topAnchor="17.0">
+               <font>
+                  <Font name="Calibri Bold Italic" size="40.0" />
+               </font>
+            </Label>
+            <Button fx:id="btn_close" layoutX="549.0" layoutY="14.0" mnemonicParsing="false" onAction="#closeAction" prefHeight="28.0" prefWidth="37.0" styleClass="btn-exit" stylesheets="@../styles/styleLogin.css" AnchorPane.bottomAnchor="33.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="14.0">
+              <graphic>
+                  <FontAwesomeIconView fill="#fffbfb" glyphName="CLOSE" size="20" text="" wrappingWidth="12.714285850524902" />
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
+      <TextField id="textFieldNome" fx:id="texFieldNome" layoutX="217.0" layoutY="167.0" prefHeight="39.0" prefWidth="345.0" promptText="digite nome ">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </TextField>
+      <Label id="labelNome" fx:id="labelNome" layoutX="138.0" layoutY="173.0" text="Nome">
+         <font>
+            <Font name="Calibri Bold Italic" size="24.0" />
+         </font>
+      </Label>
+      <TextField id="textFieldFone" fx:id="textFieldFone" layoutX="217.0" layoutY="230.0" prefHeight="44.0" prefWidth="189.0" promptText="ex(99)9999-99999">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </TextField>
+      <Label id="labelFone" fx:id="labelFone" layoutX="144.0" layoutY="238.0" text="Fone">
+         <font>
+            <Font name="Calibri Bold Italic" size="24.0" />
+         </font>
+      </Label>
+      <Label id="labelDataNasc" fx:id="labelDataNasc" layoutX="137.0" layoutY="296.0" text="Data">
+         <font>
+            <Font name="Calibri Bold Italic" size="24.0" />
+         </font>
+      </Label>
+      <DatePicker id="texFieldDataNasc" fx:id="textFieldDataNasc" layoutX="218.0" layoutY="293.0" prefHeight="33.0" prefWidth="174.0" />
+      <Button id="btnSalvar" fx:id="btnSalvar" layoutX="203.0" layoutY="492.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" styleClass="btnSalvar" stylesheets="@../styles/fxmlalunoform.css" text="Salvar" textFill="#0d0c0c">
+         <font>
+            <Font name="SansSerif Bold Italic" size="13.0" />
+         </font>
+      </Button>
+      <Button id="btnCancelar" fx:id="btnCancelar" layoutX="393.0" layoutY="492.0" mnemonicParsing="false" onAction="#cancelarAction" prefHeight="25.0" prefWidth="115.0" styleClass="btnCancelar" stylesheets="@../styles/fxmlalunoform.css" text="Cancelar">
+         <font>
+            <Font name="SansSerif Bold Italic" size="13.0" />
+         </font>
+      </Button>
+      
+      <Label id="msgError" fx:id="labelError" layoutX="305.0" layoutY="118.0" textFill="#fc0000">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="nomeError" layoutX="336.0" layoutY="145.0" textFill="RED">
+         <font>
+            <Font name="System Bold Italic" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="foneError" layoutX="273.0" layoutY="210.0" textFill="RED">
+         <font>
+            <Font name="System Bold Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="dataError" layoutX="273.0" layoutY="276.0" textFill="RED">
+         <font>
+            <Font name="System Bold Italic" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="id" layoutX="154.0" layoutY="127.0">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <TextField id="textFieldCpf" fx:id="textFieldCpf" layoutX="463.0" layoutY="231.0" prefHeight="39.0" prefWidth="182.0" promptText="ex 999.999.999-99">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </TextField>
+      <TextField id="textFieldEmail" fx:id="textFieldEmail" layoutX="217.0" layoutY="350.0" prefHeight="39.0" prefWidth="290.0" promptText="ex: maria@gmail.com">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </TextField>
+      <TextField id="texFieldEndereco" fx:id="textFieldEndereco" layoutX="217.0" layoutY="410.0" prefHeight="39.0" prefWidth="345.0" promptText="digite endereço">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </TextField>
+      <Label id="labelCpf" fx:id="labelCpf" layoutX="418.0" layoutY="239.0" text="Cpf">
+         <font>
+            <Font name="Calibri Bold Italic" size="24.0" />
+         </font>
+      </Label>
+      <Label id="labelEmail" fx:id="labelEmail" layoutX="133.0" layoutY="356.0" text="Email">
+         <font>
+            <Font name="Calibri Bold Italic" size="24.0" />
+         </font>
+      </Label>
+      <Label id="labelEndereco" fx:id="labelEndereco" layoutX="106.0" layoutY="416.0" text="Endereço">
+         <font>
+            <Font name="Calibri Bold Italic" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="labelCpfErro" layoutX="453.0" layoutY="210.0" textFill="#e80101">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
