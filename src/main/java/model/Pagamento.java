@@ -23,9 +23,9 @@ import java.util.List;
 
 public class Pagamento {
     private Integer id;
-    private Date data_pg;
-    private double valor_pg;
-    private String forma_pg;
+    private Date dataPg;
+    private double valorPg;
+    private String formaPg;
     private Matricula matricula;
     
     public Pagamento(){}
@@ -68,45 +68,45 @@ public class Pagamento {
     }
 
     /**
-     * @return the data_pg
+     * @return the dataPpg
      */
-    public Date getData_pg() {
-        return data_pg;
+    public Date getDataPg() {
+        return dataPg;
     }
 
     /**
      * @param data_pg the data_pg to set
      */
-    public void setData_pg(Date data_pg) {
-        this.data_pg = data_pg;
+    public void setDataPg(Date dataPg) {
+        this.dataPg = dataPg;
     }
 
     /**
-     * @return the valor_pg
+     * @return the valorPg
      */
-    public double getValor_pg() {
-        return valor_pg;
+    public double getValorPg() {
+        return valorPg;
     }
 
     /**
-     * @param valor_pg the valor_pg to set
+     * @param valorPg the valor_pg to set
      */
-    public void setValor_pg(double valor_pg) {
-        this.valor_pg = valor_pg;
+    public void setValorPg(double valor) {
+        this.valorPg = valor;
     }
 
     /**
      * @return the forma_pg
      */
-    public String getForma_pg() {
-        return forma_pg;
+    public String getFormaPg() {
+        return formaPg;
     }
 
     /**
      * @param forma_pg the forma_pg to set
      */
-    public void setForma_pg(String forma_pg) {
-        this.forma_pg = forma_pg;
+    public void setFormaPg(String formaPg) {
+        this.formaPg = formaPg;
     }
 
     /**

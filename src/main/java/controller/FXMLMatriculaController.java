@@ -28,6 +28,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -56,7 +57,7 @@ import javafx.stage.Stage;
  *
  * @author POSITIVO
  */
-public class FXMLMatriculaController implements Initializable {
+public class FXMLMatriculaController extends Observable implements Initializable {
 
     /**
      * Initializes the controller class.
@@ -99,6 +100,15 @@ public class FXMLMatriculaController implements Initializable {
    
     @FXML
     private TextField textfieldTotal;
+    private static FXMLMatriculaController instance;
+
+    public FXMLMatriculaController() {
+        instance = this;
+    }
+
+    public static FXMLMatriculaController getInstance() {
+        return instance;
+    }
     @FXML
     private TableView<Modalidade> tableViewModalidade = new TableView<Modalidade>();
     @FXML
@@ -189,8 +199,7 @@ public class FXMLMatriculaController implements Initializable {
         int alunoId = Integer.parseInt(label_alunoId.getText());
         if (!matricula_id.getText().isEmpty()) {
             int id = Integer.parseInt(matricula_id.getText());
-            
-            System.out.println("tem id metodo put");
+            System.out.println("matriculaController tem id metodo put");
             try {
                 Matricula matricula_bd = Matricula.find(id);
                 Aluno aluno = matricula_bd.getAluno();
@@ -243,14 +252,7 @@ public class FXMLMatriculaController implements Initializable {
         boolean result = false;
         Matricula matricula = pegaMatricula();
 
-        /*System.out.println(matricula.getDataDeVigencia());
-        System.out.println(matricula.getDataVecimento());
-        System.out.println(matricula.getDataFim());
-        System.out.println(matricula.getValor());
-        System.out.println(matricula.getStatus());
-        System.out.println(matricula.getAluno());
-        System.out.println(matricula.getModalidades());
-        */
+     
         if (matricula == null) {
             msgErro.setText("Error ao matricular null");
             apagaMsg.apagaMsg(msgErro);
@@ -262,17 +264,18 @@ public class FXMLMatriculaController implements Initializable {
             matricula.save();
             Aluno aluno = matricula.getAluno();
             aluno.setStatus(true);
+            setChanged();
+            notifyObservers(true);
             try {
                 aluno.save();  // Atualiza o aluno no banco de dados
+                
                 return result = true;
             } catch (SQLException ex) {
                 msgErro.setText("Error ao matricular");
                 apagaMsg.apagaMsg(msgErro);
                 Logger.getLogger(FXMLMatriculaController.class.getName()).log(Level.SEVERE, null, ex);
             }
-           // System.out.println(matricula.getAluno().getStatus()+" status");
-           // System.out.println(matricula.getAluno().getStatus()+" status");
-          
+           
         }
 
         return result;
@@ -308,7 +311,7 @@ public class FXMLMatriculaController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        textfieldTotal.setText("0.0");
+        //textfieldTotal.setText("0.0");
         preecheDatas();
         // TODO
         tableViewModalidade.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> selectModalidade(newSelection));
@@ -385,6 +388,8 @@ public class FXMLMatriculaController implements Initializable {
                 if (salvarAction()) {
                      System.out.println("salva matricula sucesso ");
                     Stage stage = (Stage) btnSalvar.getScene().getWindow(); // Obtém o Stage atual
+                    setChanged();
+                    notifyObservers(true);
                     stage.close();
                     
                 } else {
@@ -403,6 +408,7 @@ public class FXMLMatriculaController implements Initializable {
             Stage stage = (Stage) btnCancelar.getScene().getWindow(); // Obtém o Stage atual
             stage.close();
         });
+        
     }
 
 }

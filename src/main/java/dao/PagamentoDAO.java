@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import static main.java.dao.MatriculaDAO.alunoMatricula;
 import static main.java.dao.MatriculaDAO.getModalidadesByMatriculaId;
+import main.java.model.Aluno;
 import main.java.model.Matricula;
 
 /**
@@ -39,13 +40,11 @@ public class PagamentoDAO implements GenericRepository<Pagamento> {
             rst = update(pagamento);
             return rst;
         } else {
-            System.out.println(pagamento.getId());
-
             try (Connection conn = ConexaoSQLiteJDBC.getConexao()) {
                 PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setDate(1, new java.sql.Date(pagamento.getData_pg().getTime()));
-                stmt.setDouble(2, pagamento.getValor_pg());
-                stmt.setString(3, pagamento.getForma_pg());
+                stmt.setDate(1, new java.sql.Date(pagamento.getDataPg().getTime()));
+                stmt.setDouble(2, pagamento.getValorPg());
+                stmt.setString(3, pagamento.getFormaPg());
                 stmt.setInt(4, pagamento.getMatricula().getId());
                 stmt.executeUpdate();
                 System.out.println("mensalidade paga  com sucesso.");
@@ -61,16 +60,16 @@ public class PagamentoDAO implements GenericRepository<Pagamento> {
 
     @Override
     public Boolean update(Pagamento pagamento) throws SQLException {
-        String sql = "UPDATE tb_Pagamento SET  = ?, DATAPAGAMENTO = ?, VALOR = ?, FORMA = ?, ID_MATRICULA = ? WHERE id = ?";
+        String sql = "UPDATE tb_Pagamento SET DATAPAGAMENTO = ?, VALOR = ?, FORMA = ?, ID_MATRICULA = ? WHERE id = ?";
         Optional<Pagamento> pagamento_bd = this.find(pagamento.getId());
-        pagamento_bd.get().setData_pg(pagamento.getData_pg());
-        pagamento_bd.get().setValor_pg(pagamento.getValor_pg());
-        pagamento_bd.get().setForma_pg(pagamento.getForma_pg());
+        pagamento_bd.get().setDataPg(pagamento.getDataPg());
+        pagamento_bd.get().setValorPg(pagamento.getValorPg());
+        pagamento_bd.get().setFormaPg(pagamento.getFormaPg());
         try (Connection conn = ConexaoSQLiteJDBC.getConexao()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setDate(1, new java.sql.Date(pagamento.getData_pg().getTime()));
-            stmt.setDouble(2, pagamento.getValor_pg());
-            stmt.setString(3, pagamento.getForma_pg());
+            stmt.setDate(1, new java.sql.Date(pagamento.getDataPg().getTime()));
+            stmt.setDouble(2, pagamento.getValorPg());
+            stmt.setString(3, pagamento.getFormaPg());
             stmt.setInt(4, pagamento.getMatricula().getId());
             stmt.setInt(5, pagamento.getId());
 
@@ -103,32 +102,98 @@ public class PagamentoDAO implements GenericRepository<Pagamento> {
     }
 
     @Override
-    public List getAll() throws SQLException {
+    public List<Pagamento> getAll() throws SQLException {
         List<Pagamento> pagamentos = new ArrayList<>();
-        String sql = "SELECT * FROM tb_Pagamento";
-        try (Connection conn = ConexaoSQLiteJDBC.getConexao()) {
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
+        String sql = "SELECT p.*,m.ID AS matricula_id," +
+        "m.DATAVIGENCIA AS matricula_dataVigencia," +
+        "m.DATAVENCIMENTO AS matricula_dataVencimento," +
+        "m.DATAINICIO AS matricula_dataInicio," +
+        "m.VALOR AS matricula_valor," +
+        "m.STATUS AS matricula_status," +
+        "a.ID AS aluno_id," +
+        "a.NOME AS aluno_nome," +
+        "a.FONE AS aluno_fone," +
+        "a.DATANASC AS aluno_dataNasc," +
+        "a.CPF AS aluno_cpf," +
+        "a.EMAIL AS aluno_email, " +
+        "a.ENDERECO AS aluno_endereco," +
+        "a.STATUS AS aluno_status "
+                + "FROM tb_Pagamento p "
+                + "JOIN tb_Matricula m ON p.ID_MATRICULA = m.ID "
+                + "LEFT JOIN tb_Aluno a ON m.ID_ALUNO = a.ID"; // Use LEFT JOIN in case Aluno is null
+
+        try (Connection conn = ConexaoSQLiteJDBC.getConexao(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                int id = rs.getInt("ID");
-                Date dataPagamento = rs.getDate("DATAPAGAMENTO");
-                Double valor = rs.getDouble("VALOR");
-                String status = rs.getString("FORMA");
-                //DATAVIGENCIA ,DATAVENCIMENTO I,DATAFIM,VALOR REAL,STATUS INTEGER
                 Pagamento pagamento = new Pagamento();
-                pagamentos.add(pagamento);
+                pagamento.setId(rs.getInt("ID"));
+                pagamento.setDataPg(rs.getDate("DATAPAGAMENTO"));
+                pagamento.setValorPg(rs.getDouble("VALOR"));
+                pagamento.setFormaPg(rs.getString("FORMA"));
 
+            Matricula matricula = new Matricula();
+            matricula.setId(rs.getInt("matricula_id"));
+            matricula.setDataDeVigencia(rs.getDate("matricula_dataVigencia"));
+            matricula.setDataVecimento(rs.getDate("matricula_dataVencimento"));
+            matricula.setDataInicio(rs.getDate("matricula_dataInicio"));
+            matricula.setValor(rs.getDouble("matricula_valor"));
+            matricula.setStatus(rs.getBoolean("matricula_status"));
+
+            int alunoId = rs.getInt("aluno_id");
+            if (alunoId != 0) {
+                Aluno aluno = new Aluno();
+                aluno.setId(alunoId);
+                aluno.setNome(rs.getString("aluno_nome"));
+                aluno.setFone(rs.getString("aluno_fone"));
+                aluno.setDataNasc(rs.getDate("aluno_dataNasc"));
+                aluno.setCpf(rs.getString("aluno_cpf"));
+                aluno.setEmail(rs.getString("aluno_email"));
+                aluno.setEndereco(rs.getString("aluno_endereco"));
+                aluno.setStatus(rs.getBoolean("aluno_status"));
+                matricula.setAluno(aluno);
+            }
+
+                pagamento.setMatricula(matricula);
+                pagamentos.add(pagamento);
             }
 
         } catch (SQLException e) {
-            System.err.println("Erro ao obter todos os alunos.");
+            System.err.println("Erro ao obter todos os pagamentos.");
             e.printStackTrace();
         }
-
         return pagamentos;
     }
 
+//    @Override
+//    public List getAll() throws SQLException {
+//        List<Pagamento> pagamentos = new ArrayList<>();
+//        String sql = "SELECT * FROM tb_Pagamento";
+//        try (Connection conn = ConexaoSQLiteJDBC.getConexao()) {
+//            PreparedStatement stmt = conn.prepareStatement(sql);
+//            ResultSet rs = stmt.executeQuery();
+//
+//            while (rs.next()) {
+//
+//                Pagamento pagamento = new Pagamento();
+//                pagamento.setId(rs.getInt("ID"));
+//                pagamento.setDataPg(rs.getDate("DATAPAGAMENTO"));
+//                pagamento.setValorPg(rs.getDouble("VALOR"));
+//                pagamento.setFormaPg(rs.getString("FORMA"));
+//                //DATAVIGENCIA ,DATAVENCIMENTO I,DATAFIM,VALOR REAL,STATUS INTEGER
+//                pagamentos.add(pagamento);
+//
+//            }
+//            for (Pagamento p : pagamentos) {
+//                p.setMatricula(pagamentoMatricula(conn, p.getId()).get());
+//            }
+//
+//        } catch (SQLException e) {
+//            System.err.println("Erro ao obter todos os alunos.");
+//            e.printStackTrace();
+//        }
+//
+//        return pagamentos;
+//    }
     @Override
     public Optional find(Integer id) throws SQLException {
         Optional<Pagamento> pg = Optional.empty();
@@ -140,11 +205,11 @@ public class PagamentoDAO implements GenericRepository<Pagamento> {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 pagamento.setId(rs.getInt("id"));
-                pagamento.setData_pg(rs.getDate("data_pg"));
-                pagamento.setValor_pg(rs.getDouble("valor_pg"));
-                pagamento.setForma_pg(rs.getString("forma_pg"));
+                pagamento.setDataPg(rs.getDate("data_pg"));
+                pagamento.setValorPg(rs.getDouble("valor_pg"));
+                pagamento.setFormaPg(rs.getString("forma_pg"));
             }
-            pagamento.setMatricula(pagamentoMatricula(conn,id).get());
+            pagamento.setMatricula(pagamentoMatricula(conn, id).get());
             pg = Optional.of(pagamento);
         } catch (SQLException e) {
             System.err.println("Erro ao obter aluno pelo ID.");
@@ -155,31 +220,32 @@ public class PagamentoDAO implements GenericRepository<Pagamento> {
 
     public static Optional<Matricula> pagamentoMatricula(Connection conn, int id) throws SQLException {
         Optional<Matricula> m = Optional.empty();
-        Matricula matricula = new Matricula();
-        String sql = "select m.ID,m.DATAVIGENCIA,m.DATAVENCIMENTO,m.DATAINICIO,m.VALOR,m.STATUS,m.ID_ALUNO"
-                + "FROM tb_Matricula m"
-                + "WHERE EXISTS (SELECT 1 FROM tb_Pagamento  p where p.ID_MATRICULA = m.ID and  p.ID = 1)";
+
+        String sql = "SELECT m.ID,m.DATAVIGENCIA,m.DATAVENCIMENTO,m.DATAINICIO,m.VALOR,m.STATUS,m.ID_ALUNO "
+                + "FROM tb_Matricula m "
+                + "WHERE EXISTS (SELECT 1 FROM tb_Pagamento p WHERE p.ID_MATRICULA = m.ID AND p.ID = ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+                    Matricula matricula = new Matricula();
                     matricula.setId(rs.getInt("id"));
                     matricula.setDataDeVigencia(rs.getDate("DATAVIGENCIA"));
                     matricula.setDataVecimento(rs.getDate("DATAVENCIMENTO"));
                     matricula.setDataInicio(rs.getDate("DATAINICIO"));
                     matricula.setValor(rs.getDouble("VALOR"));
                     matricula.setStatus(rs.getBoolean("STATUS"));
+                    m = Optional.of(matricula);
+                } else {
+                    System.out.println("Matricula não encontrado para ID: " + id);
                 }
+
+            } catch (SQLException e) {
+                System.err.println("Erro ao obter matricula pelo  ID.");
+                e.printStackTrace();
             }
-            matricula.setAluno(alunoMatricula(conn, id).get());
-            matricula.setModalidades(getModalidadesByMatriculaId(conn, id));
-            m = Optional.of(matricula);
-        } catch (SQLException e) {
-            System.err.println("Erro ao obter matricula pelo  ID.");
-            e.printStackTrace();
+            return m;
         }
-        return m;
     }
 
 }

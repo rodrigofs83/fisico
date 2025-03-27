@@ -297,7 +297,6 @@ public class FXMLAlunoFormController extends Observable implements Initializable
         String fone = retiraMask(textFieldFone.getText());
         LocalDate data = textFieldDataNasc.getValue();
         String cpf = retiraMask(textFieldCpf.getText());
-        System.out.println("CPF = " + cpf);
         String email = textFieldEmail.getText();
         String endereco = textFieldEndereco.getText();
 

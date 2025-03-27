@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -52,7 +53,7 @@
                         <Font name="Microsoft Sans Serif" size="20.0" />
                      </font>
                      <graphic>
-                        <FontAwesomeIconView glyphName="ID_CARD" size="30" text="" />
+                        <FontAwesomeIconView glyphName="ID_CARD_ALT" size="30" text="" />
                      </graphic>
                   </Button>
                   <Button fx:id="btnModalidade" mnemonicParsing="false" prefHeight="47.0" prefWidth="268.0" styleClass="nav_btn" stylesheets="@../styles/academia.css" text="Modalidades" textFill="#220101">
@@ -69,13 +70,103 @@
          <center>
             <AnchorPane BorderPane.alignment="CENTER">
                <children>
-                  <Button layoutX="92.0" layoutY="115.0" mnemonicParsing="false" prefHeight="188.0" prefWidth="330.0" text="Button" />
-                  <Button layoutX="520.0" layoutY="370.0" mnemonicParsing="false" prefHeight="188.0" prefWidth="330.0" text="Button" />
-                  <Button layoutX="520.0" layoutY="115.0" mnemonicParsing="false" prefHeight="188.0" prefWidth="330.0" text="Button" />
-                  <Button layoutX="92.0" layoutY="370.0" mnemonicParsing="false" prefHeight="188.0" prefWidth="330.0" text="Button" />
+                  <Button fx:id="btnTotalAlunos" layoutX="105.0" layoutY="116.0" mnemonicParsing="false" prefHeight="188.0" prefWidth="330.0" styleClass="btnTotalAluno" />
+                  <Button fx:id="btnVencidas" layoutX="518.0" layoutY="386.0" mnemonicParsing="false" prefHeight="188.0" prefWidth="330.0" styleClass="btnMatriculaAtrasada">
+                     <stylesheets>
+                        <URL value="@../styles/academia.css" />
+                        <URL value="@../styles/styleLogin.css" />
+                     </stylesheets></Button>
+                  <Button fx:id="btnMesalidadeEmdia" layoutX="518.0" layoutY="115.0" mnemonicParsing="false" prefHeight="188.0" prefWidth="330.0" styleClass="btnMatriculaEmDia" />
+                  <Button fx:id="btnVencidoHoje" layoutX="80.0" layoutY="386.0" mnemonicParsing="false" prefHeight="188.0" prefWidth="330.0" styleClass="btnMatriculaVenceHoje" stylesheets="@../styles/styleLogin.css" />
+                  <Label layoutX="158.0" layoutY="188.0" prefHeight="43.0" prefWidth="223.0" text="TOTAL DE ALUNOS ">
+                     <font>
+                        <Font name="System Bold Italic" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelTotalAlunos" layoutX="246.0" layoutY="227.0" text="0">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="151.0" layoutY="454.0" text=" VENCENDO HOJE">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelVencendoHoje" layoutX="239.0" layoutY="489.0" text="0">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="574.0" layoutY="194.0" text="MENSALIDADES  EM DIA ">
+                     <font>
+                        <Font name="System Bold Italic" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelQtdEmdia" layoutX="671.0" layoutY="227.0" text="0">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="633.0" layoutY="454.0" text="VENCIDAS">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelVencidas" layoutX="678.0" layoutY="480.0" text="0">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="132.0" layoutY="255.0" />
+                  <Label layoutX="123.0" layoutY="514.0" text="\$">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="538.0" layoutY="264.0" text="\$">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="538.0" layoutY="515.0" text="\$">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelValorVencendoHoje" layoutX="155.0" layoutY="515.0" text="0.0">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelValorEmDia" layoutX="580.0" layoutY="264.0" text="0.0">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelValorVencidas" layoutX="580.0" layoutY="514.0" text="0.0">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="114.0" layoutY="267.0" text="Ativos">
+                     <font>
+                        <Font name="System Bold Italic" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labelAlunosAtivos" layoutX="200.0" layoutY="264.0" text="0">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
+                     </font>
+                  </Label>
+                  <FontAwesomeIconView glyphName="USERS" layoutX="226.0" layoutY="177.0" size="50" text="" />
+                  <FontAwesomeIconView glyphName="CALENDAR" layoutX="223.0" layoutY="447.0" size="50" />
+                  <FontAwesomeIconView glyphName="CALENDAR" layoutX="662.0" layoutY="175.0" size="50" />
+                  <FontAwesomeIconView glyphName="CALENDAR" layoutX="662.0" layoutY="447.0" size="50" />
                </children>
             </AnchorPane>
          </center>
       </BorderPane>
+      <FontAwesomeIconView />
    </children>
 </AnchorPane>

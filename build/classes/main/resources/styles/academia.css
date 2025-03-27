@@ -27,3 +27,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
  	-fx-background-color:#89cd80;
  	
  }
+.btnTotalAluno{
+     -fx-background-color: e8d8ff; /* Light Green */
+ }
+ .btnMatriculaEmDia{
+   -fx-background-color: #90EE90; /* Light Green */
+ }
+ .btnMatriculaVenceHoje{
+    -fx-background-color: #FFA500
+ }
+ .btnMatriculaAtrasada{
+     -fx-background-color: #FF4424; /* Light Red */
+ }
+    
+   
+                      

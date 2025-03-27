@@ -12,10 +12,17 @@ import main.java.academia.ModalidadeForm;
 import main.java.erro.Alerta;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,14 +34,53 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import main.java.dao.AlunoDAO;
+import main.java.model.Aluno;
+import main.java.model.Matricula;
+import main.java.util.DateSystem;
 
 /**
  *
  * @author POSITIVO
  */
-public class FXMLAcademiaController implements Initializable {
+public class FXMLAcademiaController implements Initializable, Observer {
 
     Alerta alerta = new Alerta();
+    @FXML
+    private Button btnMesalidadeEmdia;
+
+    @FXML
+    private Button btnModalidade;
+
+    @FXML
+    private Button btnTotalAlunos;
+
+    @FXML
+    private Button btnVencidas;
+
+    @FXML
+    private Button btnVencidoHoje;
+
+    @FXML
+    private Label labelQtdEmdia;
+
+    @FXML
+    private Label labelTotalAlunos;
+
+    @FXML
+    private Label labelValorVencidas;
+
+    @FXML
+    private Label labelVencendoHoje;
+
+    @FXML
+    private Label labelVencidas;
+
+    @FXML
+    private Label labelValorEmDia;
+
+    @FXML
+    private Label labelValorVencendoHoje;
 
     @FXML
     private Button btnHome;
@@ -43,7 +89,7 @@ public class FXMLAcademiaController implements Initializable {
     private Button btnMatriculas;
 
     @FXML
-    private Button btnModalidade;
+    private Label labelAlunosAtivos;
 
     @FXML
     private Label titulo;
@@ -58,6 +104,15 @@ public class FXMLAcademiaController implements Initializable {
     private StackPane stackpane;
     @FXML
     private Stage curretStage;
+    private static FXMLAcademiaController instance;
+
+    public FXMLAcademiaController() {
+        instance = this;
+    }
+
+    public static FXMLAcademiaController getInstance() {
+        return instance;
+    }
 
     @FXML
     void closeAction(ActionEvent event) {
@@ -71,10 +126,35 @@ public class FXMLAcademiaController implements Initializable {
     @FXML
     void home(ActionEvent event) throws Exception {
         if (Academia.getStage() != null) {
+            if (curretStage != null) {
+                curretStage.toFront();
+                curretStage.close();
+            }
             Academia.getStage().close();
+            Academia a = new Academia();
+            a.start(new Stage());
+        } else {
+            Academia a = new Academia();
+            a.start(new Stage());
         }
-        Academia a = new Academia();
-        a.start(new Stage());
+
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        System.out.println("AlunoTableController  Método update chamado!");
+        if (arg instanceof Boolean && (Boolean) arg) {
+            Platform.runLater(() -> {
+                atualizarLabelTotalAlunos();
+                atualizarTotalAlunosAtivos();
+                atualizarTotalMatriculaEmDia();
+
+            });
+        }
+    }
+
+    private void registerObserver(FXMLAlunoTableController instance) {
+        instance.addObserver(this);
     }
 
     @FXML
@@ -94,13 +174,66 @@ public class FXMLAcademiaController implements Initializable {
             AlunoTable alunoTable = new AlunoTable();
             alunoTable.start(new Stage());
             curretStage = AlunoTable.getStage();
+            FXMLAlunoTableController alunoTableController = FXMLAlunoTableController.getInstance();
+            if (alunoTableController != null) {
+                this.registerObserver(alunoTableController);
+
+            } else {
+                System.err.println("Instância de FXMLAlunoFormController é nula.");
+            }
         }
 
     }
 
+    private ObservableList<Aluno> listAlunos = FXCollections.observableArrayList();
+
+    private void atualizarLabelTotalAlunos() {
+        try {
+            List<Aluno> alunos = Aluno.getAll();
+            listAlunos.setAll(alunos); // Atualiza ObservableList
+            labelTotalAlunos.setText(String.valueOf(alunos.size()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void atualizarTotalAlunosAtivos() {
+        try {
+            List<Aluno> alunos = Aluno.getAll();
+            long totalAtivos = alunos.stream()
+                    .filter(Aluno::getStatus) // status == true
+                    .count();
+
+            labelAlunosAtivos.setText(String.valueOf(totalAtivos));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void atualizarTotalMatriculaEmDia() {
+        try {
+            int qtdEmDia = 0;
+            List<Matricula> matriculas = Matricula.getAll();
+            long totalMatriculaEmDia = matriculas.stream()
+                    .filter(m -> {
+                        if (m.getDataVecimento() == null) {
+                            return false;
+                        }
+                        return !DateSystem.isVencido(DateSystem.converteDateParalocalDate(DateSystem.convertSQLDateToDate(m.getDataVecimento())));
+                    }) // status == true
+                    .count();
+            labelQtdEmdia.setText(String.valueOf(totalMatriculaEmDia));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        labelTotalAlunos.getText();
+        this.atualizarLabelTotalAlunos();
+        this.atualizarTotalAlunosAtivos();
+        this.atualizarTotalMatriculaEmDia();
         btn_cadastra.setOnMouseClicked((MouseEvent e) -> {
             try {
                 this.cadastraAluno();
@@ -149,6 +282,8 @@ public class FXMLAcademiaController implements Initializable {
                         MatriculaTable matriculaTable = new MatriculaTable();
                         matriculaTable.start(new Stage());
                         curretStage = MatriculaTable.getStage();
+                        FXMLMatriculaTableController matriculaTableController = FXMLMatriculaTableController.getInstance();
+                        matriculaTableController.addObserver(this); // ✅ "this" = FXMLAcademiaController
 
                     }
                 } else {
@@ -156,6 +291,9 @@ public class FXMLAcademiaController implements Initializable {
                     MatriculaTable matriculaTable = new MatriculaTable();
                     curretStage = new Stage();
                     matriculaTable.start(curretStage);
+                    FXMLMatriculaTableController matriculaTableController = FXMLMatriculaTableController.getInstance();
+                    matriculaTableController.addObserver(this); // ✅ "this" = FXMLAcademiaController
+
                 }
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(FXMLAcademiaController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);

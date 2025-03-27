@@ -5,3 +5,6 @@
 .mainFxmlClass {
 
 }
+.barraPesq{
+    -fx-border-radius: 5;
+}

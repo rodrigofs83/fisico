@@ -26,6 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import main.java.academia.PagamentoForm;
+import main.java.academia.PagamentoTable;
 import main.java.model.Matricula;
 import main.java.model.Pagamento;
 import main.java.util.DateSystem;
@@ -104,17 +105,20 @@ public class FXMLPagamentoFormController extends Observable implements Initializ
         int idMatri = Integer.parseInt(idMatricula.getText());
         if (dataPickerPagamento.getValue() != null && !textFieldValor.getText().isEmpty()) {
             Date dataPag = java.sql.Date.valueOf(data);
+            System.out.println("valor textField" +textFieldValor.getText() );
             Double valor = Double.parseDouble(textFieldValor.getText());
+            System.out.println("valor = " + valor );
             String formPag = choiceBoxFormaPag.getValue();
             Matricula matricula = new Matricula();
             matricula = Matricula.find(idMatri);
-            pagamento.setData_pg(dataPag);
-            pagamento.setValor_pg(valor);
-            pagamento.setForma_pg(formPag);
+            pagamento.setDataPg(dataPag);
+            pagamento.setValorPg(valor);
+            pagamento.setFormaPg(formPag);
             pagamento.setMatricula(matricula);
+            System.out.println("pagamentos dados ");
             System.out.println(dataPag);
             System.out.println(valor);
-            System.out.println(formPag);
+            System.out.println(pagamento.getValorPg());
             return pagamento;
         } else {
             return null;
@@ -134,6 +138,12 @@ public class FXMLPagamentoFormController extends Observable implements Initializ
         matDataVig = DateSystem.retrocedeMes(matDataVenc);
         java.util.Date proxDataVig = DateSystem.convertLocalDateToDate(matDataVig);
         pagamento.getMatricula().setDataDeVigencia(proxDataVig);
+        Matricula m = pagamento.getMatricula();
+        try {
+            m.save();
+        } catch (SQLException ex) {
+            Logger.getLogger(FXMLPagamentoFormController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.out.println("data vence  " + pagamento.getMatricula().getDataVecimento());
 
     }
@@ -142,13 +152,13 @@ public class FXMLPagamentoFormController extends Observable implements Initializ
     public boolean salvarAction() throws SQLException {
         boolean result = false;
         Pagamento pagamento = pegaPagamento();
-        System.out.println(pagamento);
+        
         if (pagamento == null) {
             System.out.println("erro");
         } else {
             pagamento.save();
             atualizaDataVenc(pagamento);
-            pagamento.getMatricula().save();
+            System.out.println(pagamento.getMatricula().getAluno().getNome());
             System.out.println("data vencimento" + pagamento.getMatricula().getDataVecimento());
             result = true;
         }
@@ -205,11 +215,19 @@ public class FXMLPagamentoFormController extends Observable implements Initializ
                     notifyObservers(true);
                     Stage stage = (Stage) btnSalvar.getScene().getWindow(); // Obtém o Stage atual
                     stage.close();
+                    if (PagamentoTable.getStage() == null) {
+                        PagamentoTable a = new PagamentoTable();
+                        a.start(new Stage());
+                    }else{
+                        PagamentoTable.getStage().toFront();
+                    }
 
                 } else {
                     System.out.println("erro ao salva pagamento ");
                 }
             } catch (SQLException ex) {
+                Logger.getLogger(FXMLPagamentoFormController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(FXMLPagamentoFormController.class.getName()).log(Level.SEVERE, null, ex);
             }
 

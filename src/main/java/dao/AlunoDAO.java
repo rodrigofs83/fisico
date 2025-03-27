@@ -116,21 +116,34 @@ public class AlunoDAO implements GenericRepository<Aluno> {
                     stmt.setString(1, aluno_bd.get().getNome());
                     stmt.setString(2, aluno_bd.get().getFone());
                     stmt.setDate(3, new java.sql.Date(aluno_bd.get().getDataNasc().getTime()));
-                    if (aluno_bd.get().getCpf().isEmpty()) {
+                    if (aluno_bd.get().getCpf() == null) {
                         stmt.setNull(4, Types.VARCHAR);
                     } else {
-                        stmt.setString(4, aluno_bd.get().getCpf());
+                        if (aluno_bd.get().getCpf().isEmpty()) {
+                            stmt.setNull(4, Types.VARCHAR);
+                        } else {
+                            stmt.setString(4, aluno_bd.get().getCpf());
+                        }
                     }
-                    if (aluno_bd.get().getEmail().isEmpty()) {
+                    if (aluno_bd.get().getEmail() == null) {
+
                         stmt.setNull(5, Types.VARCHAR);
                     } else {
-                        stmt.setString(5, aluno_bd.get().getEmail());
-
+                        if (aluno_bd.get().getEmail().isEmpty()) {
+                            stmt.setNull(5, Types.VARCHAR);
+                        } else {
+                            stmt.setString(5, aluno_bd.get().getEmail());
+                        }
                     }
-                    if (aluno_bd.get().getEndereco().isEmpty()) {
+                    if (aluno_bd.get().getEndereco() == null) {
+
                         stmt.setNull(6, Types.VARCHAR);
                     } else {
-                        stmt.setString(6, aluno_bd.get().getEndereco());
+                        if (aluno_bd.get().getEndereco().isEmpty()) {
+                            stmt.setNull(6, Types.VARCHAR);
+                        } else {
+                            stmt.setString(6, aluno_bd.get().getEndereco());
+                        }
 
                     }
                     stmt.setInt(7, aluno_bd.get().getStatus() ? 1 : 0);
@@ -319,6 +332,23 @@ public class AlunoDAO implements GenericRepository<Aluno> {
             }
         }
         return rst;
+    }
+
+    public static int contarTotalAlunos() {
+        String sql = "SELECT COUNT(*) AS total_alunos FROM tb_Aluno";
+        int total = 0;
+
+        try (Connection conn = ConexaoSQLiteJDBC.getConexao(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                total = rs.getInt("total_alunos");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao contar alunos: " + e.getMessage());
+        }
+
+        return total;
     }
 
 }

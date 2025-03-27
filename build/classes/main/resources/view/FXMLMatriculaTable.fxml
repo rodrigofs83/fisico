@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
@@ -24,11 +25,20 @@
                   <Font name="Arial Black" size="47.0" />
                </font>
             </Label>
-            <Label fx:id="labelMatriculaError" layoutX="557.0" layoutY="30.0" textFill="#ff0505">
+            <Label fx:id="labelMatriculaError" layoutX="442.0" layoutY="30.0" prefHeight="35.0" prefWidth="13.0" textFill="#ff0505">
                <font>
                   <Font name="System Bold Italic" size="24.0" />
                </font>
             </Label>
+            <TextField fx:id="textFieldPesq" layoutX="909.0" layoutY="28.0" prefHeight="34.0" prefWidth="320.0" promptText="Nome do aluno" styleClass="barraPesq" stylesheets="@../styles/fxmlmatriculatable.css">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </TextField>
+            <Button fx:id="btnPesq" layoutX="1229.0" layoutY="28.0" mnemonicParsing="false" styleClass="nav_btn">
+               <graphic>
+                  <FontAwesomeIconView glyphName="SEARCH" size="30" text="" />
+               </graphic></Button>
             </children>
 
        </AnchorPane>

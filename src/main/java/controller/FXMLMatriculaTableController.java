@@ -42,6 +42,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -54,7 +55,7 @@ import main.java.util.DateSystem;
  *
  * @author POSITIVO
  */
-public class FXMLMatriculaTableController implements Initializable, Observer {
+public class FXMLMatriculaTableController extends Observable implements Initializable, Observer {
 
     @FXML
     private Button btnMatricular;
@@ -71,6 +72,17 @@ public class FXMLMatriculaTableController implements Initializable, Observer {
 
     @FXML
     private Button btn_excluirMatricula;
+    @FXML
+    private TextField textFieldPesq;
+     private static FXMLMatriculaTableController instance;
+
+    public static FXMLMatriculaTableController getInstance() {
+        return instance;
+    }
+
+    public FXMLMatriculaTableController() {
+        instance = this;
+    }
 
     @FXML
     private TableColumn<Matricula, Aluno> columnAluno = new TableColumn<>();
@@ -173,6 +185,8 @@ public class FXMLMatriculaTableController implements Initializable, Observer {
 
         } else {
             matriculaSelecionado.delete();
+            setChanged();
+            notifyObservers(true);
             result = true;
         }
         return result;
@@ -193,7 +207,7 @@ public class FXMLMatriculaTableController implements Initializable, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("Método update chamado!");
+        System.out.println(" Método update chamado!");
         if (arg instanceof Boolean && (Boolean) arg) {
             Platform.runLater(() -> {
                 atualizarTable();
@@ -288,6 +302,7 @@ public class FXMLMatriculaTableController implements Initializable, Observer {
             List<Matricula> matriculas = Matricula.getAll();
             matriculaList.addAll(matriculas);
             tvMatricula.setItems(matriculaList);
+            
         } catch (SQLException ex) {
             Logger.getLogger(FXMLMatriculaTableController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -312,6 +327,7 @@ public class FXMLMatriculaTableController implements Initializable, Observer {
                                         aluno.save();
                                         matriculaList.remove(matriculaSelecionada);
                                         tvMatricula.refresh();
+                                        
                                     } catch (SQLException ex) {
                                         Logger.getLogger(FXMLMatriculaTableController.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -369,6 +385,23 @@ public class FXMLMatriculaTableController implements Initializable, Observer {
                 }
             }
         });
+        
+        textFieldPesq.textProperty().addListener((observable, oldValue, newValue) -> {
+            new Thread(() -> {
+                try {
+                    List<Matricula> resultados = MatriculaDAO.getMatriculasByAlunoNome(newValue);
+                    // Atualize a lista na thread da UI
+                    Platform.runLater(() -> {
+                        tvMatricula.setItems(FXCollections.observableArrayList(resultados));
+                    });
+                } catch (SQLException e) {
+                    // Trate a exceção
+                    e.printStackTrace();
+                }
+            }).start();
+        });
+
+
     }
 
 }
